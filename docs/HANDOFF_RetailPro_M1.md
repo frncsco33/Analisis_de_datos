@@ -83,14 +83,26 @@ Each KPI is shown with its variation vs. the previous period.
 
 To regenerate: `python3 boceto.py && node build.js`
 
-## 5. Open items / known risks
-- [ ] Replace `[Tu nombre]` in the header (`build.js`).
+## 5. Changes in v2 (brief rebuilt in repo `Analisis_de_datos`)
+- KPI deltas now compare **semester vs previous semester**, matching the strategic question (v1 used quarter).
+- Chart A: two aligned panels (sales, margin %) sharing the month axis instead of a dual y-axis; sales bars start at zero and grow ~8%, matching the KPI.
+- Chart B: now a **margin bridge** (previous semester → mix effect → rate effect per category → current semester). Steps sum to -4.6 pp, matching the KPI card. This is what actually answers P4.
+- Chart C: one point per category-month with a trend line within each category (P3 reworded: "within each category"), avoiding cross-category confounding.
+- Table D: now at product grain (region × category × product, units, margin vs category average) so it answers P6.
+- Utilidad bruta delta corrected to -12.6% (1.081 × 19.4 / 24.0 − 1).
+- Added traceability table (question → element → KPI) and the mix/rate formulas.
+- Author and delivery date set in `build.js` (`AUTOR`, `FECHA`).
+
+## 6. Open items / known risks
+- [x] Author name set in `build.js`.
+- [ ] Confirm the delivery date in `FECHA` (`build.js`).
+- [ ] Confirm whether the course counts the KPI band as 1 visual element or 4 (if 4, the dashboard has 8 elements).
 - [ ] Optional: remove the illustrative numbers from the sketch and keep only labels.
 - [ ] **Main risk:** if the course's future dataset has no cost column, margin can't be calculated. Fallback angle: discount and volume by category.
 - [ ] When the SQL module's dataset arrives, map its columns to the model in 3.2 and update the KPI formulas.
 - [ ] Module 7 will redo the sketch (Z reading pattern, hierarchy, color, typography).
 
-## 6. How I want you to work
+## 7. How I want you to work
 - Challenge my assumptions before agreeing. Tag claims as [Certain] / [Likely] / [Guessing]. Where it helps, separate Facts / Interpretations / Unknowns.
 - Don't present invented data as real; label it.
 - End each reply with: "What is the strongest argument against your current position?"

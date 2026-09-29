@@ -1,0 +1,7 @@
+{
+  "name": "retailpro-m1-brief",
+  "private": true,
+  "description": "Genera el DOCX del brief analítico M1",
+  "scripts": { "build": "python3 boceto.py && node build.js" },
+  "dependencies": { "docx": "^9.0.0" }
+}
