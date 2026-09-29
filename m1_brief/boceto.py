@@ -69,34 +69,26 @@ ax.annotate("inicio caída", xy=(xs[6], my[6]), xytext=(xs[6] - 10, my[6] - 2.2)
 for x, m in zip(xs, meses):
     ax.text(x, 24.6, m, fontsize=6, ha="center", color=mute)
 
-# Chart B: margin bridge previous -> current semester, split into mix effect and
-# rate effect per category. Steps sum exactly to the KPI delta (-4.6 pp).
+# Chart B: margin % by category, previous vs current semester (bars start at 0)
 box(49, 24, 33, 22, fc="white")
-chart_title(50.5, 43.8, "B · Puente de margen: mix vs tasa", "Responde P2 y P4: ¿qué categoría y qué efecto?")
-steps = [("Sem. anterior", 24.0, "total"), ("Efecto mix", -0.4, "step"), ("Laptops", -2.1, "step"),
-         ("Celulares", -1.4, "step"), ("Accesorios", -0.6, "step"), ("Gaming", -0.4, "step"),
-         ("Periféricos", 0.3, "step"), ("Sem. actual", 19.4, "total")]
-x0, scale, base = 63.5, 2.55, 18.0          # axis starts at 18% so pp steps are readable
-px = lambda v: x0 + (v - base) * scale
-run = 0.0
-for i, (lab, val, kind) in enumerate(steps):
-    y = 39.4 - i * 1.95
-    ax.text(x0 - 0.8, y, lab, fontsize=7, ha="right", va="center", color=(acc if lab == "Efecto mix" else ink))
-    if kind == "total":
-        ax.barh(y, px(val) - x0, left=x0, height=1.3, color=neutral)
-        ax.text(px(val) + 0.5, y, f"{val:.1f}%", fontsize=6.5, va="center", color=ink)
-        run = val
-    else:
-        new = run + val
-        ax.barh(y, px(new) - px(run), left=px(run), height=1.3, color=(acc if val < 0 else pos))
-        ax.text(min(px(run), px(new)) - 0.4, y, f"{val:+.1f}", fontsize=6.5, ha="right", va="center", color=ink)
-        run = new
-ax.text(81, 24.8, "eje desde 18%", fontsize=6, ha="right", color=mute, style="italic")
+chart_title(50.5, 43.8, "B · Margen % por categoría", "Responde P2: ¿qué categorías cayeron más?")
+cats_b = [("Laptops", 16.0, 11.5), ("Celulares", 20.5, 17.0), ("Gaming", 26.0, 24.5),
+          ("Periféricos", 29.0, 29.8), ("Accesorios", 34.0, 32.0)]
+x0, scale = 62.5, 0.44
+for i, (lab, prev, cur) in enumerate(cats_b):
+    y = 38.6 - i * 2.75
+    ax.text(x0 - 0.8, y - 0.35, lab, fontsize=7.5, ha="right", va="center", color=ink)
+    ax.barh(y + 0.1, prev * scale, left=x0, height=0.9, color="#cbd5e1")
+    ax.barh(y - 0.85, cur * scale, left=x0, height=0.9, color=(acc if cur < prev else pos))
+    ax.text(x0 + cur * scale + 0.4, y - 0.85, f"{cur:.1f}%", fontsize=6.5, va="center", color=ink)
+ax.plot([x0, x0], [25.3, 40], color=mute, lw=.8)
+ax.add_patch(plt.Rectangle((63, 25.0), 1.2, 0.8, color="#cbd5e1")); ax.text(64.6, 25.4, "sem. anterior", fontsize=6.5, va="center", color=mute)
+ax.add_patch(plt.Rectangle((72, 25.0), 1.2, 0.8, color=acc)); ax.text(73.6, 25.4, "sem. actual", fontsize=6.5, va="center", color=mute)
 
 # Chart C: discount vs margin, one point per category-month, trend line within each
 # category (compares months inside a category, not categories against each other).
 box(84, 24, 33, 22, fc="white")
-chart_title(85.5, 43.8, "C · Descuento % vs margen %", "Responde P3: dentro de cada categoría")
+chart_title(85.5, 43.8, "C · Descuento % vs margen %", "Responde P3: ¿más descuento, menos margen?")
 rng = np.random.default_rng(3)
 cats = [("Accesorios", 38.0), ("Periféricos", 35.6), ("Gaming", 33.2), ("Celulares", 30.8), ("Laptops", 28.4)]
 for name, y0 in cats:
@@ -108,24 +100,24 @@ for name, y0 in cats:
 ax.plot([88.5, 88.5], [26, 39.5], color=line, lw=.6); ax.plot([88.5, 110], [26, 26], color=line, lw=.6)
 ax.text(110, 24.8, "descuento % →", fontsize=6.5, ha="right", color=mute)
 ax.text(86, 39.8, "margen % ↑", fontsize=6.5, color=mute)
-ax.text(86, 24.8, "1 punto = categoría-mes", fontsize=6, color=mute, style="italic")
+ax.text(86, 24.8, "1 punto = categoría en un mes", fontsize=6, color=mute, style="italic")
 
-# Zone 4: detail table at product grain (answers P6; P5 via region column + segment filter)
+# Zone 4: detail table at product grain (answers P4 with region column + segment filter, and P5)
 zone(4, 5.5, 20)
 box(3, 3, 114, 15.5, fc="white")
-ax.text(4.5, 16.5, "D · Detalle región × categoría × producto  —  Responde P5 y P6 (ordenable; por defecto: más unidades con margen bajo el promedio)",
+ax.text(4.5, 16.5, "D · Detalle por región, categoría y producto  —  Responde P4 y P5 (tabla ordenable)",
         fontsize=8.5, weight="bold", color=ink)
-hdr = ["Región", "Categoría", "Producto", "Unidades", "Ventas", "Margen %", "vs prom. cat. (pp)", "Desc. %"]
-cx = [5, 17, 30, 58, 69, 80, 91, 106]
+hdr = ["Región", "Categoría", "Producto", "Unidades", "Ventas", "Margen %", "Desc. %"]
+cx = [5, 19, 35, 64, 78, 91, 104]
 for x, h in zip(cx, hdr):
     ax.text(x, 13.2, h, fontsize=8, weight="bold", color=mute)
 ax.plot([4.5, 115.5], [12.3, 12.3], color=line, lw=.8)
-rows = [["Norte", "Laptops", "Laptop 15\" gama media", "4,820", "$3.9 M", "11.8%", "-4.2", "17.5%"],
-        ["Centro", "Celulares", "Smartphone 128GB", "7,310", "$4.6 M", "15.1%", "-3.1", "14.0%"],
-        ["Sur", "Accesorios", "Cargador USB-C", "15,940", "$0.6 M", "29.3%", "-2.4", "9.2%"]]
+rows = [["Norte", "Laptops", "Laptop 15\" gama media", "4,820", "$3.9 M", "9.8%", "17.5%"],
+        ["Centro", "Celulares", "Smartphone 128GB", "7,310", "$4.6 M", "14.2%", "14.0%"],
+        ["Sur", "Accesorios", "Cargador USB-C", "15,940", "$0.6 M", "29.3%", "9.2%"]]
 for j, r in enumerate(rows):
     for x, c in zip(cx, r):
-        ax.text(x, 10.2 - j * 2.6, c, fontsize=8, color=(acc if x == 91 else ink))
+        ax.text(x, 10.2 - j * 2.6, c, fontsize=8, color=ink)
 
 ax.text(116, 1.9, "Valores ilustrativos: escenario de diseño, no datos reales", fontsize=7, ha="right", color=mute, style="italic")
 fig.savefig("boceto.png", dpi=160)

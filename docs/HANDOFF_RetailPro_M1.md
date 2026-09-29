@@ -93,10 +93,17 @@ To regenerate: `python3 boceto.py && node build.js`
 - Added traceability table (question → element → KPI) and the mix/rate formulas.
 - Author and delivery date set in `build.js` (`AUTOR`, `FECHA`).
 
+## 5b. Changes in v3 (simplified to module level)
+- Dropped the mix vs rate question and the margin bridge; questions are now P1-P5.
+- Chart B: margin % by category, previous vs current semester (paired bars from 0).
+- Table D: region, category, product, units, sales, margin %, discount %.
+- Document text shortened (~550 words), first person, plain Word formatting; no traceability table.
+
 ## 6. Open items / known risks
 - [x] Author name set in `build.js`.
 - [ ] Confirm the delivery date in `FECHA` (`build.js`).
 - [ ] Confirm whether the course counts the KPI band as 1 visual element or 4 (if 4, the dashboard has 8 elements).
+- [ ] Make the GitHub repo private (Settings > Danger Zone > Change visibility).
 - [ ] Optional: remove the illustrative numbers from the sketch and keep only labels.
 - [ ] **Main risk:** if the course's future dataset has no cost column, margin can't be calculated. Fallback angle: discount and volume by category.
 - [ ] When the SQL module's dataset arrives, map its columns to the model in 3.2 and update the KPI formulas.
